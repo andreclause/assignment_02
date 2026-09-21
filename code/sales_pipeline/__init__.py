@@ -73,6 +73,7 @@ from .transform import (
     calculate_total_revenue,
     clean_sales_data,
     find_top_entry,
+    summarize_by_day,
     summarize_by_item,
 )
 from .display import print_sales_table
@@ -97,6 +98,7 @@ __all__ = [
     "calculate_total_revenue",
     "clean_sales_data",
     "find_top_entry",
+    "summarize_by_day",
     "summarize_by_item",
     "print_sales_table",
 ]

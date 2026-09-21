@@ -19,21 +19,14 @@ Before running:  pip install -r requirements.txt
 
 import sys
 
-from sales_pipeline.extract import get_raw_sales_data
-from sales_pipeline.transform import (
+from sales_pipeline import (
     clean_sales_data,
-    summarize_by_item,
     find_top_entry,
+    get_raw_sales_data,
+    print_item_table,
+    summarize_by_item,
 )
 
-
-def print_item_summary(items):
-    """Print the item-level results without relying on a missing display API."""
-    for entry in items:
-        print(
-            f"{entry['item']}: ${entry['revenue']:,.2f} "
-            f"({entry['units_sold']} units)"
-        )
 
 # --- The report ------------------------------------------------------------------
 #
