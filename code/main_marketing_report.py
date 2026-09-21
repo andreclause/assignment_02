@@ -19,6 +19,22 @@ Before running:  pip install -r requirements.txt
 
 import sys
 
+from sales_pipeline.extract import get_raw_sales_data
+from sales_pipeline.transform import (
+    clean_sales_data,
+    summarize_by_item,
+    find_top_entry,
+)
+
+
+def print_item_summary(items):
+    """Print the item-level results without relying on a missing display API."""
+    for entry in items:
+        print(
+            f"{entry['item']}: ${entry['revenue']:,.2f} "
+            f"({entry['units_sold']} units)"
+        )
+
 # --- The report ------------------------------------------------------------------
 #
 # Less scaffolding this time. The steps are described, but which function does each
@@ -27,26 +43,26 @@ import sys
 # already exists in transform.py.
 #
 # `main_finance_report.py` is your worked example for anything structural.
-
-# TODO: import what this report needs from the package.
-
-
-# TODO: handle the optional dataset seed. This is the same three lines the Finance
-#       report has — read them there, then write them here yourself.
+seed = None
+if len(sys.argv) > 1 and sys.argv[1].strip() != "":
+    seed = int(sys.argv[1])
 
 
-# TODO: print the header, exactly:   === MARKETING: Revenue by Item ===
-#       then a blank line.
+print("=== MARKETING: Revenue by Item ===")
+print()
 
 
 # 1. Extract — the same source Finance uses, called the same way.
-# TODO
+rows = get_raw_sales_data(seed)
 
 
 # 2. Transform — clean the rows, roll them up to one entry per item, then find the
 #    best entry twice: once by "revenue", once by "units_sold". They are usually
 #    different products, which is the whole reason Marketing asked.
-# TODO
+cleaned_rows = clean_sales_data(rows)
+items = summarize_by_item(cleaned_rows)
+top_revenue = find_top_entry(items, "revenue")
+top_units = find_top_entry(items, "units_sold")
 
 
 # 3. Load — the item table, a blank line, then two headline lines. Match this
@@ -54,4 +70,7 @@ import sys
 #
 #        Top seller by revenue: Gizmo Pro ($1,200.00)
 #        Top seller by units:   Widget C (15 units)
-# TODO
+print_item_summary(items)
+print()
+print(f"Top seller by revenue: {top_revenue['item']} (${top_revenue['revenue']:,.2f})")
+print(f"Top seller by units:   {top_units['item']} ({top_units['units_sold']} units)")

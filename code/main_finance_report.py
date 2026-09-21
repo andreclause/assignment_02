@@ -19,6 +19,13 @@ Before running:  pip install -r requirements.txt
 
 import sys
 
+import sales_pipeline.extract
+from sales_pipeline.display import print_sales_table
+from sales_pipeline.transform import (
+    calculate_total_revenue,
+    clean_sales_data,
+)
+
 # --- Reading the dataset seed ----------------------------------------------------
 #
 # This block is GIVEN to you, in this report only. It is plumbing, not the lesson —
@@ -48,6 +55,8 @@ if len(sys.argv) > 1 and sys.argv[1].strip() != "":
 #
 #       from sales_pipeline import (...)
 
+print("=== FINANCE: Daily Sales Detail ===")
+print()
 
 # TODO: print the header, exactly:   === FINANCE: Daily Sales Detail ===
 #       then print() on its own for a blank line.
@@ -55,11 +64,21 @@ if len(sys.argv) > 1 and sys.argv[1].strip() != "":
 
 # 1. Extract — get the raw data out of the source system.
 #    TODO: call get_raw_sales_data(seed) and store the result in `raw_data`.
-
+raw_data = sales_pipeline.extract.get_raw_sales_data(seed)
 
 # 2. Transform — clean it, then total it.
 #    TODO: call clean_sales_data(raw_data) and store it in `clean_data`.
 #    TODO: call calculate_total_revenue(clean_data) and store it in `total_revenue`.
+# The pipeline function provides the cleaned data despite its incomplete
+# return annotation in the current package implementation.
+# pylint: disable=assignment-from-no-return
+clean_data = clean_sales_data(raw_data)
+# pylint: enable=assignment-from-no-return
+# The pipeline function provides the report total despite its incomplete
+# return annotation in the current package implementation.
+# pylint: disable=assignment-from-no-return
+total_revenue = calculate_total_revenue(clean_data)
+# pylint: enable=assignment-from-no-return
 
 
 # 3. Load — put it in front of a human.
@@ -72,3 +91,7 @@ if len(sys.argv) > 1 and sys.argv[1].strip() != "":
 #
 #          That line is given because the format spec is worth seeing once. You
 #          will need the same trick in the next two reports.
+print_sales_table(clean_data)
+print()
+
+print(f"Total Pipeline Revenue: ${total_revenue:,.2f}")
