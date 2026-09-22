@@ -41,13 +41,15 @@ Before running:  pip install -r requirements.txt
 # calculation belongs in sales_pipeline/transform.py.
 import sys
 
+
 from sales_pipeline import (
     clean_sales_data,
     find_top_entry,
     get_raw_sales_data,
-    display_summary,
+    print_daily_table,
     summarize_by_day,
 )
+
 
 
 seed = int(sys.argv[1]) if len(sys.argv) > 1 else None
@@ -59,7 +61,7 @@ raw_data = get_raw_sales_data(seed)
 cleaned_data = clean_sales_data(raw_data)
 day_summary = summarize_by_day(cleaned_data)
 
-display_summary(day_summary)
+print_daily_table(day_summary)
 
 busiest_day = find_top_entry(day_summary, "revenue")
 
